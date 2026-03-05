@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CasaMap · Inmuebles en Venta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">Casa<span>Map</span></div>
+  <div class="nav-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#90a955" stroke-width="2.5">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder="Ciudad, colonia o dirección…" id="search-input" />
+  </div>
+  <div class="nav-actions">
+    <button class="btn-outline">⚙️ Filtros</button>
+    <button class="btn-primary">+ Publicar</button>
+  </div>
+</nav>
+
+<!-- ── FILTROS ─────────────────────────────────── -->
+<div class="filters-bar">
+  <button class="filter-chip active" data-filter="all">Todos</button>
+  <button class="filter-chip" data-filter="casa">🏡 Casa</button>
+  <button class="filter-chip" data-filter="departamento">🏢 Depto.</button>
+  <button class="filter-chip" data-filter="terreno">🌿 Terreno</button>
+  <button class="filter-chip" data-filter="menos3">Menos de $3M</button>
+  <button class="filter-chip" data-filter="3a5">$3M – $5M</button>
+  <button class="filter-chip" data-filter="mas5">Más de $5M</button>
+  <button class="filter-chip" data-filter="nuevo">🔥 Nuevo</button>
+</div>
+
+<!-- ── LAYOUT PRINCIPAL ────────────────────────── -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Inmuebles disponibles <span class="count-badge" id="count-badge">8</span></h2>
+      <p>Ordenados por relevancia · CDMX y Zona Metro</p>
+    </div>
+    <div class="property-list" id="property-list"></div>
+  </aside>
+
+  <!-- MAPA REAL DE GOOGLE MAPS -->
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+
+</div><!-- /.main -->
+
+<!-- 1. Primero carga script-googlemaps.js -->
+<script src="script-googlemaps.js"></script>
+
+<!-- 2. Luego el loader de Google Maps (llama a initMap() como callback) -->
+<script>
+(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+({key: "AIzaSyAVG3w8SB--KX1DNB0ELmuj1aDl1MFiogA", v: "weekly", libraries: "places", callback: "initMap"});
+</script>
+
+</body>
+</html>
