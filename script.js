@@ -40,7 +40,7 @@ const gMarkers = {};
 // Si tienes un Map ID propio, reemplázalo aquí.
 // Para crear uno: https://console.cloud.google.com/google/maps-api/studio/maps
 // Si lo dejas vacío, se usarán marcadores estándar en vez de AdvancedMarkerElement.
-const GOOGLE_MAP_ID = "casamap-489301";
+const GOOGLE_MAP_ID = "";
 
 async function initMap() {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps");
@@ -260,8 +260,10 @@ function selectProperty(id, fromMap = false) {
   renderGoogleMarkers().then(() => {
     if (selectedId) {
       const p = properties.find(x => x.id === id);
-      googleMap.panTo({ lat: p.lat, lng: p.lng });
-      googleMap.setZoom(14);
+      if (googleMap) {
+        googleMap.panTo({ lat: p.lat, lng: p.lng });
+        googleMap.setZoom(14);
+      }
       const marker = gMarkers[id];
       if (marker) openInfoWindow(p, marker);
       if (!fromMap) {
@@ -269,7 +271,7 @@ function selectProperty(id, fromMap = false) {
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     } else {
-      infoWindow.close();
+      if (infoWindow) infoWindow.close();
     }
   });
 }
