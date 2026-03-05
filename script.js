@@ -4,14 +4,7 @@
 // ============================================================
 
 // ── CONFIGURACIÓN ──────────────────────────────────────────────────────────
-// Cambia esta API Key por la tuya si es necesario.
-// Asegúrate de tener habilitadas: Maps JavaScript API y Places API
-// y que tu dominio de GitHub Pages esté autorizado en las restricciones.
 const GOOGLE_MAPS_API_KEY = "AIzaSyCiPSLnqVlJCzSO-Oh4pgTwHLBzmk3dfYs";
-
-// ── CARGAR GOOGLE MAPS DESDE JS ────────────────────────────────────────────
-(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}); var r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-  ({ key: GOOGLE_MAPS_API_KEY, v: "weekly", libraries: "places", callback: "initMap" });
 
 // ── DATOS CON COORDENADAS REALES (CDMX) ───────────────────────────────────
 const properties = [
@@ -37,33 +30,18 @@ let infoWindow = null;
 const gMarkers = {};
 
 // ── INICIALIZAR GOOGLE MAPS (callback desde la API) ────────────────────────
-// Si tienes un Map ID propio, reemplázalo aquí.
-// Para crear uno: https://console.cloud.google.com/google/maps-api/studio/maps
-// Si lo dejas vacío, se usarán marcadores estándar en vez de AdvancedMarkerElement.
-const GOOGLE_MAP_ID = "b41fd1d4737f6f92ba307825";
-
-async function initMap() {
-  const { Map, InfoWindow } = await google.maps.importLibrary("maps");
-  await google.maps.importLibrary("marker");
-  await google.maps.importLibrary("places");
-
-  const mapOptions = {
+function initMap() {
+  googleMap = new google.maps.Map(document.getElementById("map"), {
     zoom: 11,
     center: { lat: 19.38, lng: -99.17 },
+    mapId: "b41fd1d4737f6f92ba307825",
     zoomControl: true,
     streetViewControl: false,
     mapTypeControl: false,
     fullscreenControl: false,
-  };
+  });
 
-  // Solo agregar mapId si está definido (necesario para AdvancedMarkerElement)
-  if (GOOGLE_MAP_ID) {
-    mapOptions.mapId = GOOGLE_MAP_ID;
-  }
-
-  googleMap = new Map(document.getElementById("map"), mapOptions);
-
-  infoWindow = new InfoWindow();
+  infoWindow = new google.maps.InfoWindow();
 
   // ── Places Autocomplete en la barra de búsqueda ──────────────────────
   const searchInput = document.getElementById('search-input');
@@ -123,56 +101,36 @@ function buildMarkerElement(p, isActive = false) {
 }
 
 // ── RENDERIZAR MARCADORES EN GOOGLE MAPS ──────────────────────────────────
-async function renderGoogleMarkers() {
+function renderGoogleMarkers() {
   if (!googleMap) return;
 
   // Limpiar marcadores anteriores
-  Object.values(gMarkers).forEach(m => {
-    if (m.setMap) m.setMap(null);  // Marker estándar
-    else m.map = null;             // AdvancedMarkerElement
-  });
+  Object.values(gMarkers).forEach(m => m.setMap(null));
   Object.keys(gMarkers).forEach(k => delete gMarkers[k]);
 
-  if (GOOGLE_MAP_ID) {
-    // ── Con Map ID: usar AdvancedMarkerElement con burbuja personalizada ──
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    filtered.forEach(p => {
-      const markerEl = buildMarkerElement(p, selectedId === p.id);
-      const marker = new AdvancedMarkerElement({
-        map: googleMap,
-        position: { lat: p.lat, lng: p.lng },
-        content: markerEl,
-        title: p.title,
-      });
-      marker.addListener("click", () => selectProperty(p.id, true));
-      gMarkers[p.id] = marker;
+  filtered.forEach(p => {
+    const marker = new google.maps.Marker({
+      map: googleMap,
+      position: { lat: p.lat, lng: p.lng },
+      title: p.title,
+      label: {
+        text: p.price,
+        fontSize: "11px",
+        fontWeight: "bold",
+        color: "#4f772d",
+      },
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: "#4f772d",
+        fillOpacity: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 2,
+      },
     });
-  } else {
-    // ── Sin Map ID: usar Marker estándar (siempre funciona) ──
-    filtered.forEach(p => {
-      const marker = new google.maps.Marker({
-        map: googleMap,
-        position: { lat: p.lat, lng: p.lng },
-        title: p.title,
-        label: {
-          text: p.price,
-          fontSize: "11px",
-          fontWeight: "bold",
-          color: "#4f772d",
-        },
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: "#4f772d",
-          fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        },
-      });
-      marker.addListener("click", () => selectProperty(p.id, true));
-      gMarkers[p.id] = marker;
-    });
-  }
+    marker.addListener("click", () => selectProperty(p.id, true));
+    gMarkers[p.id] = marker;
+  });
 }
 
 // ── INFO WINDOW DE GOOGLE MAPS ─────────────────────────────────────────────
@@ -257,23 +215,22 @@ function renderCards() {
 function selectProperty(id, fromMap = false) {
   selectedId = selectedId === id ? null : id;
   renderCards();
-  renderGoogleMarkers().then(() => {
-    if (selectedId) {
-      const p = properties.find(x => x.id === id);
-      if (googleMap) {
-        googleMap.panTo({ lat: p.lat, lng: p.lng });
-        googleMap.setZoom(14);
-      }
-      const marker = gMarkers[id];
-      if (marker) openInfoWindow(p, marker);
-      if (!fromMap) {
-        const card = document.querySelector(`.property-card[data-id="${id}"]`);
-        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    } else {
-      if (infoWindow) infoWindow.close();
+  renderGoogleMarkers();
+  if (selectedId) {
+    const p = properties.find(x => x.id === id);
+    if (googleMap) {
+      googleMap.panTo({ lat: p.lat, lng: p.lng });
+      googleMap.setZoom(14);
     }
-  });
+    const marker = gMarkers[id];
+    if (marker) openInfoWindow(p, marker);
+    if (!fromMap) {
+      const card = document.querySelector(`.property-card[data-id="${id}"]`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  } else {
+    if (infoWindow) infoWindow.close();
+  }
 }
 
 // ── LIMPIAR BÚSQUEDA ───────────────────────────────────────────────────────
@@ -323,7 +280,3 @@ function applyFilter() {
 }
 
 document.getElementById('search-input').addEventListener('input', applyFilter);
-
-// ── INICIAR EL MAPA ───────────────────────────────────────────────────────
-// Llamada explícita porque el bootstrap loader no ejecuta el callback automáticamente.
-initMap();
