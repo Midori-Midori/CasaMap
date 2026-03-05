@@ -40,7 +40,7 @@ const gMarkers = {};
 // Si tienes un Map ID propio, reemplázalo aquí.
 // Para crear uno: https://console.cloud.google.com/google/maps-api/studio/maps
 // Si lo dejas vacío, se usarán marcadores estándar en vez de AdvancedMarkerElement.
-const GOOGLE_MAP_ID = "";
+const GOOGLE_MAP_ID = "b41fd1d4737f6f92ba307825";
 
 async function initMap() {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps");
