@@ -323,3 +323,7 @@ function applyFilter() {
 }
 
 document.getElementById('search-input').addEventListener('input', applyFilter);
+
+// ── INICIAR EL MAPA ───────────────────────────────────────────────────────
+// Llamada explícita porque el bootstrap loader no ejecuta el callback automáticamente.
+initMap();
