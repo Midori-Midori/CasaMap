@@ -1,12 +1,9 @@
-// ============================================================
-//  CasaMap · script.js
-//  Google Maps integrado
-// ============================================================
 
-// ── CONFIGURACIÓN ──────────────────────────────────────────────────────────
+
+
 const GOOGLE_MAPS_API_KEY = "AIzaSyCiPSLnqVlJCzSO-Oh4pgTwHLBzmk3dfYs";
 
-// ── DATOS CON COORDENADAS REALES (CDMX) ───────────────────────────────────
+
 const properties = [
   { id: 1, title: "Casa con jardín en Coyoacán", address: "Coyoacán, CDMX", price: "$3,200,000", priceNum: 3200000, type: "casa", beds: 3, baths: 2, m2: 180, emoji: "🏡", bg: "linear-gradient(135deg,#deeaaf,#c5d988)", badge: "Nuevo", lat: 19.3467, lng: -99.1617, isNew: true, tags: ["coyoacan", "jardin", "casa"] },
   { id: 2, title: "Departamento moderno en Polanco", address: "Polanco, CDMX", price: "$4,800,000", priceNum: 4800000, type: "departamento", beds: 2, baths: 2, m2: 95, emoji: "🏢", bg: "linear-gradient(135deg,#c8dca0,#a8c478)", badge: null, lat: 19.4327, lng: -99.1937, isNew: false, tags: ["polanco", "departamento", "moderno"] },
@@ -18,18 +15,18 @@ const properties = [
   { id: 8, title: "Terreno en Tlalpan", address: "Tlalpan, CDMX", price: "$980,000", priceNum: 980000, type: "terreno", beds: 0, baths: 0, m2: 500, emoji: "🌄", bg: "linear-gradient(135deg,#a8c870,#90a955)", badge: null, lat: 19.2920, lng: -99.1654, isNew: false, tags: ["tlalpan", "terreno", "grande"] },
 ];
 
-// ── ESTADO ─────────────────────────────────────────────────────────────────
+
 let selectedId = null;
 let favorites = new Set();
 let activeFilter = 'all';
 let filtered = [...properties];
 
-// Referencias al mapa y marcadores
+
 let googleMap = null;
 let infoWindow = null;
 const gMarkers = {};
 
-// ── INICIALIZAR GOOGLE MAPS (callback desde la API) ────────────────────────
+
 function initMap() {
   googleMap = new google.maps.Map(document.getElementById("map"), {
     zoom: 11,
@@ -43,7 +40,7 @@ function initMap() {
 
   infoWindow = new google.maps.InfoWindow();
 
-  // ── Places Autocomplete en la barra de búsqueda ──────────────────────
+
   const searchInput = document.getElementById('search-input');
   const autocomplete = new google.maps.places.Autocomplete(searchInput, {
     fields: ["geometry", "name", "formatted_address"],
@@ -55,7 +52,7 @@ function initMap() {
       applyFilter();
       return;
     }
-    // Mover el mapa al lugar seleccionado
+
     if (place.geometry.viewport) {
       googleMap.fitBounds(place.geometry.viewport);
     } else {
@@ -65,7 +62,7 @@ function initMap() {
     applyFilter();
   });
 
-  // Cerrar selección al hacer clic en el mapa
+
   googleMap.addListener("click", () => {
     selectedId = null;
     infoWindow.close();
@@ -77,7 +74,7 @@ function initMap() {
   renderGoogleMarkers();
 }
 
-// ── BÚSQUEDA INTELIGENTE ───────────────────────────────────────────────────
+
 function matchesSearch(p, query) {
   if (!query) return true;
   const words = query.toLowerCase().trim().split(/\s+/);
@@ -92,7 +89,7 @@ function matchesSearch(p, query) {
   return words.every(w => searchable.includes(w));
 }
 
-// ── CREAR ELEMENTO VISUAL DEL MARCADOR ────────────────────────────────────
+
 function buildMarkerElement(p, isActive = false) {
   const div = document.createElement("div");
   div.className = "marker-bubble" + (isActive ? " active-marker" : "");
@@ -100,11 +97,11 @@ function buildMarkerElement(p, isActive = false) {
   return div;
 }
 
-// ── RENDERIZAR MARCADORES EN GOOGLE MAPS ──────────────────────────────────
+
 function renderGoogleMarkers() {
   if (!googleMap) return;
 
-  // Limpiar marcadores anteriores
+
   Object.values(gMarkers).forEach(m => m.setMap(null));
   Object.keys(gMarkers).forEach(k => delete gMarkers[k]);
 
@@ -133,7 +130,7 @@ function renderGoogleMarkers() {
   });
 }
 
-// ── INFO WINDOW DE GOOGLE MAPS ─────────────────────────────────────────────
+
 function openInfoWindow(p, marker) {
   const specsHtml = p.type !== 'terreno'
     ? `<div class="iw-specs"><span>🛏 ${p.beds}</span><span>🚿 ${p.baths}</span><span>📐 ${p.m2} m²</span></div>`
@@ -156,7 +153,7 @@ function openInfoWindow(p, marker) {
   infoWindow.open({ map: googleMap, anchor: marker });
 }
 
-// ── RENDERIZAR TARJETAS ────────────────────────────────────────────────────
+
 function renderCards() {
   const list = document.getElementById('property-list');
   document.getElementById('count-badge').textContent = filtered.length;
@@ -211,7 +208,7 @@ function renderCards() {
   });
 }
 
-// ── SELECCIONAR PROPIEDAD ──────────────────────────────────────────────────
+
 function selectProperty(id, fromMap = false) {
   selectedId = selectedId === id ? null : id;
   renderCards();
@@ -233,7 +230,7 @@ function selectProperty(id, fromMap = false) {
   }
 }
 
-// ── LIMPIAR BÚSQUEDA ───────────────────────────────────────────────────────
+
 function clearSearch() {
   document.getElementById('search-input').value = '';
   activeFilter = 'all';
@@ -248,7 +245,7 @@ function clearSearch() {
   renderGoogleMarkers();
 }
 
-// ── FILTROS ────────────────────────────────────────────────────────────────
+
 document.querySelectorAll('.filter-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));

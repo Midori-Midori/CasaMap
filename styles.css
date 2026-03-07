@@ -1,32 +1,24 @@
-/* ============================================
-   CasaMap · Estilos principales
-   ============================================ */
-
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 :root {
-  /* ── Paleta verde ─────────────────────────
-     #132a13  verde muy oscuro
-     #31572c  verde oscuro
-     #4f772d  verde medio  ← acento principal
-     #90a955  verde oliva
-     #ecf39e  verde claro  ← fondos
-  ───────────────────────────────────────── */
-  --cream:        #f4f9e8;
-  --warm-white:   #f9fdf0;
-  --rust:         #4f772d;
-  --rust-dark:    #31572c;
-  --sand:         #deeaaf;
-  --sand-dark:    #c5d988;
-  --charcoal:     #132a13;
-  --brown-mid:    #31572c;
-  --brown-light:  #90a955;
-  --shadow-warm:  rgba(19, 42, 19, 0.12);
-  --radius:       16px;
+
+  --cream: #f4f9e8;
+  --warm-white: #f9fdf0;
+  --rust: #4f772d;
+  --rust-dark: #31572c;
+  --sand: #deeaaf;
+  --sand-dark: #c5d988;
+  --charcoal: #132a13;
+  --brown-mid: #31572c;
+  --brown-light: #90a955;
+  --shadow-warm: rgba(19, 42, 19, 0.12);
+  --radius: 16px;
 }
 
 body {
@@ -39,7 +31,7 @@ body {
   flex-direction: column;
 }
 
-/* ── NAVBAR ─────────────────────────────── */
+
 
 nav {
   background: var(--warm-white);
@@ -101,7 +93,7 @@ nav {
   gap: 10px;
 }
 
-/* ── BOTONES ─────────────────────────────── */
+
 
 .btn-primary {
   background: var(--rust);
@@ -139,7 +131,7 @@ nav {
   background: var(--sand);
 }
 
-/* ── BARRA DE FILTROS ────────────────────── */
+
 
 .filters-bar {
   background: var(--warm-white);
@@ -177,7 +169,7 @@ nav {
   border-color: var(--rust);
 }
 
-/* ── LAYOUT PRINCIPAL ────────────────────── */
+
 
 .main {
   display: flex;
@@ -185,7 +177,7 @@ nav {
   overflow: hidden;
 }
 
-/* ── SIDEBAR ─────────────────────────────── */
+
 
 .sidebar {
   width: 400px;
@@ -231,7 +223,7 @@ nav {
   margin-left: 8px;
 }
 
-/* ── TARJETAS DE PROPIEDADES ─────────────── */
+
 
 .property-list {
   padding: 12px;
@@ -251,8 +243,15 @@ nav {
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .property-card:hover,
@@ -349,7 +348,7 @@ nav {
   font-weight: 500;
 }
 
-/* ── MAPA ────────────────────────────────── */
+
 
 .map-container {
   flex: 1;
@@ -380,7 +379,7 @@ nav {
   height: 100%;
 }
 
-/* ── MARCADORES ──────────────────────────── */
+
 
 .map-marker {
   position: absolute;
@@ -427,7 +426,7 @@ nav {
   border-top-color: var(--rust-dark);
 }
 
-/* ── INFO WINDOW ─────────────────────────── */
+
 
 .info-window {
   position: absolute;
@@ -443,11 +442,20 @@ nav {
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: scale(0.85) translateY(10px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.info-window.visible { display: block; }
+.info-window.visible {
+  display: block;
+}
 
 .iw-img {
   width: 100%;
@@ -459,7 +467,9 @@ nav {
   position: relative;
 }
 
-.iw-body { padding: 12px 14px; }
+.iw-body {
+  padding: 12px 14px;
+}
 
 .iw-price {
   font-family: "Fraunces", serif;
@@ -496,7 +506,9 @@ nav {
   transition: background 0.2s;
 }
 
-.iw-btn:hover { background: var(--rust-dark); }
+.iw-btn:hover {
+  background: var(--rust-dark);
+}
 
 .iw-close {
   position: absolute;
@@ -515,7 +527,7 @@ nav {
   z-index: 2;
 }
 
-/* ── CONTROLES DEL MAPA ──────────────────── */
+
 
 .map-controls {
   position: absolute;
@@ -547,7 +559,7 @@ nav {
   transform: scale(1.05);
 }
 
-/* ── LEYENDA ─────────────────────────────── */
+
 
 .map-legend {
   position: absolute;
